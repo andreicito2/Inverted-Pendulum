@@ -5,7 +5,7 @@ Repository for our ENGR 454 Control Systems Project
 
 Classic inverted Pendulum using modern control theory with Octave.
 
-![alt text](ENGR_454_Single_invpen.jpg)
+![!\[alt text\](ENGR_454_Single_invpen.jpg)](Photos/ENGR_454_Single_invpen.jpg)
 
 Video: https://youtu.be/5oP2OeEzNEM
 
