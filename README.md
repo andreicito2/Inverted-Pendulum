@@ -10,17 +10,17 @@ Classic inverted Pendulum using modern control theory with Octave.
 Video: https://youtu.be/5oP2OeEzNEM
 
 ## Description:
-This project is a part of our Control Systems class, where we where tasked with developing a control system with the methods we learned in the first half of the class. Our project was to make a single inverted pendulum with the possibility of adding a second inverted pendulum. Then system uses a Spartin-3 FPGA for communication with an dc motor, 2 encoders, and 2 hall effect sensors.
-The DC motor moves the cart on the track with a string and the encoders give the angles of the 2 pendulums. and the hall effect sensors are their to keep the motor from launching the cart in to the end of the track and the motor shaft from snapping. 
-The FPGA uses Octave and the "sockets" library to communicate with a laptop. Then the code uses the "control" library for LQR placement. 
+This project was done for out Control Systems class, in which we where tasked with developing a control system using the methods learned during the class. The project chosen was to balance an inverted pendulum with the possibility of adding a second pendulum. The system uses a Spartan-3 FPGA for communication with a DC motor, 4 encoders, and 2 hall effect sensors.
+The DC motor moves the cart on the track with a string. The encoders provide the angles of the 2 pendulums as well as the position of the cart. One encoder remains unused. The hall effect sensors are intended to shutoff the FPGA when the cart reaches them, preventing the cart from slamming into the end supports.
+A laptop, running Octave, uses the "sockets" package to communicate with the FPGA board.
 
 ## Setup:
-To use the system you need the "ctrlbox.m" file and "pendulum_single.m" files. The "ctrlbox.m" file talks with with FPGA to run code and get error messages back. The "pendulum_single.m" file holds the control method for balancing a single inverted pendulum.
+To use the system you need the "ctrlbox.m" file and "pendulum_single.m" files. The "pendulum_single.m" file holds the control method for balancing a the pendulum. The "ctrlbox.m" file interfaces with the FPGA to operate the motor.
 
 
 ## Features:
 - Full State Observer
-- LQR Control 
+- LQR Control using the Octave "control" package
 - Octave
 
 
