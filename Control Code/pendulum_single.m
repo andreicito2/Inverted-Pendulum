@@ -66,7 +66,7 @@ xhat = [0; 0; 0; 0];    % Control data [x, xdot, Theta1, Theta1dot]
 
 
 disp(' Rotate the long pendulum CCW to vertical and hit ENTER.')
-pause;
+pause; % Wait for user input to continue
 
 ctrlbox_init();            % Connect to FPGA control board
 disp('finished init');     % Confirm connection
