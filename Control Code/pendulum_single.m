@@ -5,7 +5,7 @@ m = 0.0318;   % Pendulum Mass (kg)
 M = 0.3333;   % Cart Mass (kg)
 l = 0.316/2;  % Half Length of Pendulum (m)
 g = 9.81;     % Gravity (m/s^2)
-I = 0.0085*(0.0098^2+0.0379^2)/12 + m*((l*2)^2)/3;  % Rotational Inertia of Pendulum (kg*m^2)
+I = 0.0085*(0.0098^2+0.0379^2)/12 + m*((l*2)^2)/3;
 
 a1 = 0.0185;
 c1 = 2*a1*I;      % Viscous friction of pendulum 1 (rotational) (Nms/rad)
@@ -16,7 +16,7 @@ c = (M+m)*g*sin(alpha*pi/180)/xdotss;   % Damping / Viscous Friction (kg/s)
 
 
 %% Setup Motion Matrices (xdot = Ax + Bu)
-denom = (M+m)*(m*l^2+I)
+denom = (M+m)*(m*l^2+I);
 
 A = [0 1 0 0;
     0 -(m*l^2+I)*c/denom m^2*l^2*g/denom m*l*c1/denom;
@@ -38,10 +38,11 @@ K = lqr(A,B,Q,R);          % State feedback matrix
 C = [1 0 0 0;
     0 0 1 0];
 
-eigs = [-40 -41 -42 -43];  % Observer Poles
-L = place(A',C',eigs)';    % Observer Gain Matrix
+eigs = [-40 -41 -42 -43];
 
-Ad = A-L*C
+L = place(A',C',eigs)';
+
+Ad = A-L*C;
 
 
 %% Control Motor
@@ -55,7 +56,7 @@ srate = 1/T;          % Sample rate (Hz)
 
 % Define encoder scaling
 rd = 0.0254/2;        % Drive pulley radius (m)
-encpts = 4096         % Number of encoder measurement points
+encpts = 4096;        % Number of encoder measurement points
 scale = [-rd*2*pi/encpts  -2*pi/encpts];  % Define encoder scaling
 
 % Initialize Matrices
@@ -100,6 +101,7 @@ while (1)
 
         % Save data
         store(c,:) = [rdata(1).*scale(2),rdata(3).*scale(1),xhat(:,c+1)(2),xhat(:,c+1)(4),0];
+	      % store(c,:) = [rdata,pwm];
       end
     runtime = toc;
     fprintf('transactions=%d seconds=%d transactions/sec=%f\n',
