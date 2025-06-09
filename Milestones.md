@@ -1,4 +1,5 @@
-# Initial Project Milestones: Inverted Pendulum Control System
+# Project Milestones: Inverted Pendulum Control System
+Below are our project milestones for the inverted pendulum control system. Many weeks lined up with our original milestones, but there were a few that differed, especially near the end. As such the original milestones will be listed first, then an appended version will be added after, if necessary.
 
 ## Week 1-2: Background and Theory
 - Attended lectures on control systems fundamentals
@@ -10,7 +11,10 @@
 - Linearized the system and developed the state-space model
 - Documented derivation and assumptions
 
-## Actual week 3:
+### Actual week 3:
+- Derived equations of motion for the inverted pendulum
+- Linearized the system and developed the state-space model
+- Documented derivation and assumptions
 - Read through provided code (system parameters and ctrlbox code)
 
 ## Week 4: Simulation Environment Setup
@@ -33,14 +37,16 @@
 - Ran full closed-loop simulations with initial perturbations
 - Visualized results with plots and animations
 
-## Actual Week 7:
-- animations where not done
+### Actual Week 7:
+- Integrated controller and observer in simulation
+- Ran full closed-loop simulations with initial perturbations
+- Visualized results with plots but no animations
 
 ## Week 8: Hardware/Embedded Preparation (if applicable)
 - Prepared code for embedded deployment (e.g., PlatformIO project setup)
 - Reviewed hardware requirements and constraints
 
-## Actual Week 8:
+### Actual Week 8:
 - Finalized code for the single inverted pendulum
 - Tuned and optimized controller and observer parameters
 - Improved simulation accuracy and documentation
@@ -50,7 +56,7 @@
 - Validated controller and observer performance under various scenarios
 - Documented results and troubleshooting steps
 
-## Actual Week 9:
+### Actual Week 9:
 - Began work on modeling and simulating a double/inverted pendulum system
 - Attempted to extend controller and observer design to the second pendulum
 - Documented challenges and initial results
