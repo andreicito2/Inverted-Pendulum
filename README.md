@@ -1,4 +1,4 @@
-# Single-Inverted-Pendulum
+# Inverted-Pendulum
 Repository for our ENGR 454 Control Systems Project
 
 Classic inverted Pendulum using modern control theory with Octave.
