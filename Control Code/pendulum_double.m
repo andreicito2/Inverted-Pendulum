@@ -57,6 +57,9 @@ Ad = A-L*C;
 %% Control Motor
 ctrlbox;              % load ctrlbox comm functions
 
+disp('Rotate both pendulums CCW to vertical and hit Enter')
+pause;
+
 % Define time and sample settings
 T=1/1000;             % Period (s)
 Trun = 10;            % Run time (s)
@@ -72,6 +75,7 @@ scale = [-rd*2*pi/encpts  -2*pi/encpts];  % Define encoder scaling
 store = zeros(cnt,7);      % Storage matrix
 rdata = [0,0,0,0];         % Receive data [Theta1, Theta2, x, unused]
 xhat = [0; 0; 0; 0; 0; 0]; % Control data [x, xdot, Theta1, Theta1dot, Theta2, Theta2dot]
+
 
 
     ctrlbox_init();
@@ -97,7 +101,6 @@ while (1)
             fprintf('ctrlbox_error: %d\n',ctrlbox_error());
             ctrlbox_shutdown();
             return;
-	      end
 
         xhat(:,c+1)=T*(Ad*xhat(:,c)-B*K*xhat(:,c)+L*([rd*rdata(3).*scale(1);rdata(1)*scale(2)-pi;rdata(2)*scale(2)-pi]))+xhat(:,c);
 

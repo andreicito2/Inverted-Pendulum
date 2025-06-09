@@ -29,7 +29,7 @@ B = [0;
     m*l/denom];
 
 %% Design LQR controller
-Q = diags(48000 0 100 0);  % Weight of each variable (x, xdot, Theta1, Theta1dot)
+Q = diag([48000 0 100 0]);  % Weight of each variable (x, xdot, Theta1, Theta1dot)
 R = 1;                     % Motor control cost
 K = lqr(A,B,Q,R);          % State feedback matrix
 
