@@ -26,7 +26,7 @@ A = [0 1 0 0;
 B = [0;
     (m*l^2+I)/denom;
     0
-    m*l/denom]1;
+    m*l/denom];
 
 %% Design LQR controller
 Q = diags(48000 0 100 0);  % Weight of each variable (x, xdot, Theta1, Theta1dot)
@@ -38,9 +38,8 @@ K = lqr(A,B,Q,R);          % State feedback matrix
 C = [1 0 0 0;
     0 0 1 0];
 
-eigs = [-40 -41 -42 -43];
-
-L = place(A',C',eigs)';
+eigs = [-40 -41 -42 -43];  % Observer Poles
+L = place(A',C',eigs)';    % Observer Gain Matrix
 
 Ad = A-L*C
 
@@ -66,7 +65,7 @@ xhat = [0; 0; 0; 0];    % Control data [x, xdot, Theta1, Theta1dot]
 
 
 disp(' Rotate the long pendulum CCW to vertical and hit ENTER.')
-pause; % Wait for user input to continue
+pause;
 
 ctrlbox_init();            % Connect to FPGA control board
 disp('finished init');     % Confirm connection
@@ -101,7 +100,6 @@ while (1)
 
         % Save data
         store(c,:) = [rdata(1).*scale(2),rdata(3).*scale(1),xhat(:,c+1)(2),xhat(:,c+1)(4),0];
-	      % store(c,:) = [rdata,pwm];
       end
     runtime = toc;
     fprintf('transactions=%d seconds=%d transactions/sec=%f\n',

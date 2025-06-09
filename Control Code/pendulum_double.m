@@ -40,44 +40,38 @@ A = [0 1 0 0 0 0;
 B = [0; inv_M(1,1); 0; inv_M(2,1); 0; inv_M(3,1)];
 
 %% Design LQR controller
-Q = diag([1000, 0, 100, 0, 100, 0]); % Weights of each variable
-
-R = 1;   % Cost of using motor
-
-K = lqr(A,B,Q,R);
+Q = diag([1000, 0, 100, 0, 100, 0]); % Weights of each variable (x, xdot, Theta1, Theta1dot, Theta2, Theta2dot)
+R = 1;               % Cost of using motor
+K = lqr(A,B,Q,R);    % State feedback matrix
 
 %% Observer
 C = [1 0 0 0 0 0;
     0 0 1 0 0 0;
     0 0 0 0 1 0];
 
-eigs = [-10,-11,-12,-13,-14,-15];
-
-L = place(A',C',eigs)';
+eigs = [-10,-11,-12,-13,-14,-15]; % Observer Poles
+L = place(A',C',eigs)';           % Observer Gain Matrix
 
 Ad = A-L*C;
 
-D = zeros(size(C,1),size(B,2));
+%% Control Motor
+ctrlbox;              % load ctrlbox comm functions
 
-% Control Motor
-ctrlbox;        % load ctrlbox comm functions
+% Define time and sample settings
+T=1/1000;             % Period (s)
+Trun = 10;            % Run time (s)
+cnt=Trun/T;           % Number of times through loop
+srate = 1/T;          % Sample rate (Hz)
 
-disp(' Rotate both pendulums CCW to vertical and hit ENTER.')
+% Define encoder scaling
+rd = 0.0254/2;        % Drive pulley radius (m)
+encpts = 4096         % Number of encoder measurement points
+scale = [-rd*2*pi/encpts  -2*pi/encpts];  % Define encoder scaling
 
-pause;
-
-
-T=1/1000;       % Sample period (s)
-Trun = 10;      % Run time (s)
-cnt=Trun/T;     % Number of times through loop
-srate = 1/T;    % Sample rate (Hz)
-
-store = zeros(cnt,5);
-rdata = [0,0,0,0];        % receive data [
-rd = 0.0254/2; % m         Drive pulley radius
-scale = [-rd*2*pi/4096  -2*pi/4096 -0.05/250];
-
-xhat=[0; 0; 0; 0; 0; 0];
+% Initialize Matrices
+store = zeros(cnt,7);      % Storage matrix
+rdata = [0,0,0,0];         % Receive data [Theta1, Theta2, x, unused]
+xhat = [0; 0; 0; 0; 0; 0]; % Control data [x, xdot, Theta1, Theta1dot, Theta2, Theta2dot]
 
 
     ctrlbox_init();
@@ -101,18 +95,9 @@ while (1)
         % if something failed, display error and loop count
         if (ctrlbox_error() != 0)
             fprintf('ctrlbox_error: %d\n',ctrlbox_error());
-            %disp('last error:');
-            %disp(lasterror.message);
             ctrlbox_shutdown();
-            %exit();
             return;
-
-	% elseif c > 1 && rdata(3) < 3*pi/4 || rdata(3) > 5*pi/4
-	%    fprintf('Error. Angle out of range');
-	%    ctrlbox_shutdown();
-	%    return;
-
-	end
+	      end
 
         xhat(:,c+1)=T*(Ad*xhat(:,c)-B*K*xhat(:,c)+L*([rd*rdata(3).*scale(1);rdata(1)*scale(2)-pi;rdata(2)*scale(2)-pi]))+xhat(:,c);
 
@@ -126,8 +111,7 @@ while (1)
         drawnow;
 
         % save data
-        % store(c,:) = [rdata(1).*scale(2),rdata(3).*scale(1),xhat(:,c+1)(2),xhat(:,c+1)(4),0];
-	      store(c,:) = [rdata,pwm];
+        store(c,:) = [rdata(1).*scale(2) rdata(2).*scale(2) rdata(3).*scale(1) xhat(:,c+1)(2) xhat(:,c+1)(4),0];
       end
     runtime = toc;
     fprintf('transactions=%d seconds=%d transactions/sec=%f\n',
