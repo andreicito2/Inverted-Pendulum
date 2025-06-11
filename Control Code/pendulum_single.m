@@ -5,7 +5,7 @@ m = 0.0318;   % Pendulum Mass (kg)
 M = 0.3333;   % Cart Mass (kg)
 l = 0.316/2;  % Half Length of Pendulum (m)
 g = 9.81;     % Gravity (m/s^2)
-I = 0.0085*(0.0098^2+0.0379^2)/12 + m*((l*2)^2)/3;
+I = 0.0085*(0.0098^2+0.0379^2)/12 + m*((l*2)^2)/3; % Rotational Inertia of Pendulum (kg*m^2)
 
 a1 = 0.0185;
 c1 = 2*a1*I;      % Viscous friction of pendulum 1 (rotational) (Nms/rad)
@@ -29,7 +29,7 @@ B = [0;
     m*l/denom];
 
 %% Design LQR controller
-Q = diag([50000 0 100 0]);  % Weight of each variable (x, xdot, Theta1, Theta1dot)
+Q = diag([50000 0 100 0]); % Weight of each variable (x, xdot, Theta1, Theta1dot)
 R = 1;                     % Motor control cost
 K = lqr(A,B,Q,R);          % State feedback matrix
 
@@ -38,11 +38,10 @@ K = lqr(A,B,Q,R);          % State feedback matrix
 C = [1 0 0 0;
     0 0 1 0];
 
-eigs = [-40 -41 -42 -43];
+eigs = [-40 -41 -42 -43];  % Observer Poles
+L = place(A',C',eigs)';    % Observer Gain Matrix
 
-L = place(A',C',eigs)';
-
-Ad = A-L*C;
+Ad = A-L*C
 
 
 %% Control Motor
