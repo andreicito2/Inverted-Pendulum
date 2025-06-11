@@ -1,35 +1,36 @@
-% Tyler Sing and Andrei Maiorov: ENGR 454 double inverted Pendulum Project
+% Tyler Sing and Andrei Maiorov: ENGR 454 Double Inverted Pendulum Project
 pkg load control sockets
 
 %% System Parameters
-m1 = 0.0318; %Long Pendulum(1) mass
-m2 = 0.0085; %Short Pendulum(2) mass
-M = 0.3163; %Cart Mass
-l1 = 0.316/2; %Half length of Pendulum(1)
-l2 = 0.079/2; %Half length of Pendulum(2)
-g = 9.81; %Gravity
-I1 = 0.0085*(0.0098^2+0.0379^2)/12 + m1*((l1*2)^2)/3;
-I2 = 0.0085*(0.0098^2+0.0379^2)/12 + m2*((l2*2)^2)/3;
+m1 = 0.0318;  % Long Pendulum(1) mass (kg)
+m2 = 0.0085;  % Short Pendulum(2) mass (kg)
+M = 0.3163;   % Cart Mass (kg)
+l1 = 0.316/2; % Half length of Pendulum 1 (m)
+l2 = 0.079/2; % Half length of Pendulum 2 (m)
+g = 9.81;     % Gravity (m/s^2)
+I1 = 0.0085*(0.0098^2+0.0379^2)/12 + m1*((l1*2)^2)/3; % Rotational Inertia of Pendulum 1 (kg*m^2)
+I2 = 0.0085*(0.0098^2+0.0379^2)/12 + m2*((l2*2)^2)/3; % Rotational Inertia of Pendulum 2 (kg*m^2)
 
 
-alpha = 12.2; %Carriage Slope
-xdotss = 0.4852; %Terminal Velocity
+alpha = 12.2;     % Carriage Slope
+xdotss = 0.4852;  % Terminal Velocity
 
 a1 = 0.0185;
 a2 = 0.012;
 
 c = (M+m1+m2)*g*sin(alpha*pi/180)/xdotss; %Damping / Viscous Friction
-c1 = 2*a1*I1; % Nms/rad    Viscous friction of pendulum 1 (rotational
-c2 = 2*a2*I2; % Nms/rad    Viscous friction of pendulum 2 (rotational
+c1 = 2*a1*I1; % Viscous friction of pendulum 1 (rotational) (Nms/rad)
+c2 = 2*a2*I2; % Viscous friction of pendulum 2 (rotational) (Nms/rad)
 
 
-% Mass component
+% Mass component (from EOM derivation)
 M = [ M+m1+m2 m1*l1      m2*l2;
     -m1*l1     -m1*l1^2+I1 0 ;
     -m2*l2     0          -m2*l2^2+I2];
 
 inv_M = inv(M)
 
+%% Setup Motion Matrices (xdot = Ax + Bu)
 A = [0 1 0 0 0 0;
     0 -inv_M(1,1)*c inv_M(1,2)*m1*l1*g inv_M(1,2)*c1 inv_M(1,3)*m2*l2*g inv_M(1,3)*c2;
     0 0 0 1 0 0;
@@ -39,12 +40,14 @@ A = [0 1 0 0 0 0;
 
 B = [0; inv_M(1,1); 0; inv_M(2,1); 0; inv_M(3,1)];
 
+
 %% Design LQR controller
 Q = diag([1000, 0, 100, 0, 100, 0]); % Weights of each variable (x, xdot, Theta1, Theta1dot, Theta2, Theta2dot)
 R = 1;               % Cost of using motor
 K = lqr(A,B,Q,R);    % State feedback matrix
 
-%% Observer
+
+%% Design Observer
 C = [1 0 0 0 0 0;
     0 0 1 0 0 0;
     0 0 0 0 1 0];
@@ -61,14 +64,14 @@ disp('Rotate both pendulums CCW to vertical and hit Enter')
 pause;
 
 % Define time and sample settings
-T=1/1000;             % Period (s)
-Trun = 10;            % Run time (s)
-cnt=Trun/T;           % Number of times through loop
-srate = 1/T;          % Sample rate (Hz)
+T=1/1000;         % Period (s)
+Trun = 10;        % Run time (s)
+cnt=Trun/T;       % Number of times through loop
+srate = 1/T;      % Sample rate (Hz)
 
 % Define encoder scaling
-rd = 0.0254/2;        % Drive pulley radius (m)
-encpts = 4096         % Number of encoder measurement points
+rd = 0.0254/2;    % Drive pulley radius (m)
+encpts = 4096     % Number of encoder measurement points
 scale = [-rd*2*pi/encpts  -2*pi/encpts];  % Define encoder scaling
 
 % Initialize Matrices
@@ -124,5 +127,4 @@ end
 
 % disable motor and disconnect
 ctrlbox_shutdown();
-
 

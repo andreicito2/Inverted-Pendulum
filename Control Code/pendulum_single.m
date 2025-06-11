@@ -1,3 +1,4 @@
+% Tyler Sing and Andrei Maiorov: ENGR 454 Single Inverted Pendulum Project
 pkg load control sockets
 
 %System Parameters
@@ -48,14 +49,14 @@ Ad = A-L*C
 ctrlbox;              % load ctrlbox comm functions
 
 % Define time and sample settings
-T=1/1000;             % Period (s)
-Trun = 10;            % Run time (s)
-cnt=Trun/T;           % Number of times through loop
-srate = 1/T;          % Sample rate (Hz)
+T=1/1000;         % Period (s)
+Trun = 10;        % Run time (s)
+cnt=Trun/T;       % Number of times through loop
+srate = 1/T;      % Sample rate (Hz)
 
 % Define encoder scaling
-rd = 0.0254/2;        % Drive pulley radius (m)
-encpts = 4096;        % Number of encoder measurement points
+rd = 0.0254/2;    % Drive pulley radius (m)
+encpts = 4096;    % Number of encoder measurement points
 scale = [-rd*2*pi/encpts  -2*pi/encpts];  % Define encoder scaling
 
 % Initialize Matrices
